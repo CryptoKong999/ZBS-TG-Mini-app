@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>ZBS Newz</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}</style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    const ZBSLogo = () => (
+      <svg viewBox="0 0 100 80" className="w-24 h-20">
+        <ellipse cx="18" cy="38" rx="7" ry="10" fill="#D4247B"/>
+        <circle cx="15" cy="24" r="7" fill="#D4247B"/>
+        <path d="M10 18 Q4 8, 2 12" stroke="#D4247B" strokeWidth="3" fill="none" strokeLinecap="round"/>
+        <path d="M20 18 Q24 6, 28 10" stroke="#D4247B" strokeWidth="3" fill="none" strokeLinecap="round"/>
+        <ellipse cx="26" cy="32" rx="5" ry="3" fill="#D4247B" transform="rotate(45 26 32)"/>
+        <ellipse cx="12" cy="50" rx="5" ry="3" fill="#D4247B" transform="rotate(-30 12 50)"/>
+        <path d="M12 48 Q2 55, 4 65 Q6 72, 2 78" stroke="#D4247B" strokeWidth="3" fill="none" strokeLinecap="round"/>
+        <rect x="28" y="12" width="65" height="32" rx="6" fill="#FFD700"/>
+        <text x="60" y="34" textAnchor="middle" fontSize="20" fontWeight="900" fill="#1a2744" fontFamily="Arial Black, sans-serif">ZBS</text>
+        <rect x="28" y="42" width="65" height="28" rx="6" fill="#D4247B"/>
+        <text x="60" y="62" textAnchor="middle" fontSize="16" fontWeight="900" fill="#FFD700" fontFamily="Arial Black, sans-serif">NEWZ</text>
+      </svg>
+    );
+
+    const InstagramIcon = () => (
+      <svg viewBox="0 0 24 24" className="w-6 h-6">
+        <defs><linearGradient id="ig" x1="0%" y1="100%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#FFDC80"/><stop offset="25%" stopColor="#F77737"/>
+          <stop offset="50%" stopColor="#E1306C"/><stop offset="75%" stopColor="#C13584"/><stop offset="100%" stopColor="#5851DB"/>
+        </linearGradient></defs>
+        <rect x="2" y="2" width="20" height="20" rx="5" fill="url(#ig)"/>
+        <circle cx="12" cy="12" r="4" fill="none" stroke="white" strokeWidth="2"/>
+        <circle cx="17.5" cy="6.5" r="1.5" fill="white"/>
+      </svg>
+    );
+    const YouTubeIcon = () => (
+      <svg viewBox="0 0 24 24" className="w-6 h-6">
+        <rect x="1" y="4" width="22" height="16" rx="4" fill="#FF0000"/>
+        <polygon points="10,8 10,16 16,12" fill="white"/>
+      </svg>
+    );
+    const TikTokIcon = () => (
+      <svg viewBox="0 0 24 24" className="w-6 h-6">
+        <rect width="24" height="24" rx="4" fill="black"/>
+        <path d="M17 8.5a4 4 0 01-3-1.5v7a4 4 0 11-4-4v2a2 2 0 102 2V5h2a4 4 0 004 3.5" fill="none" stroke="white" strokeWidth="1.5"/>
+        <path d="M16.5 8a4 4 0 01-3-1.5v7a4 4 0 11-4-4" fill="none" stroke="#00F2EA" strokeWidth="1.5"/>
+        <path d="M17.5 9a4 4 0 01-3-1.5v7a4 4 0 11-4-4" fill="none" stroke="#FF0050" strokeWidth="1.5"/>
+      </svg>
+    );
+    const TelegramIcon = () => (
+      <svg viewBox="0 0 24 24" className="w-6 h-6">
+        <circle cx="12" cy="12" r="11" fill="url(#tg)"/>
+        <defs><linearGradient id="tg" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#37AEE2"/><stop offset="100%" stopColor="#1E96C8"/>
+        </linearGradient></defs>
+        <path d="M6 11.5l10-4c.5-.2 1 .1.8.7l-2 9c-.1.5-.5.6-.8.4l-2.5-2-1.5 1.5c-.2.2-.5.1-.5-.2v-2.5L6.5 12c-.4-.1-.5-.4-.5-.5z" fill="white"/>
+      </svg>
+    );
+
+    const ZBSMiniApp = () => {
+      const [lang, setLang] = useState('ru');
+      const [currentPage, setCurrentPage] = useState('home');
+      const [userName, setUserName] = useState('');
+
+      useEffect(() => {
+        if (window.Telegram?.WebApp) {
+          const tg = window.Telegram.WebApp;
+          tg.ready();
+          tg.expand();
+          const user = tg.initDataUnsafe?.user;
+          if (user?.first_name) setUserName(user.first_name);
+        }
+      }, []);
+
+      const socials = {
+        ru: {
+          title: 'НАШИ СОЦ.СЕТИ',
+          instagram: [
+            { name: 'ZBS Podcast', url: 'https://www.instagram.com/zbspodcast' },
+            { name: 'ZBS Newz RU', url: 'https://www.instagram.com/zbsnewz' }
+          ],
+          youtube: [{ name: 'ZBS Podcast', url: 'https://youtube.com/@zbspodcast' }],
+          tiktok: [{ name: 'ZBS Podcast', url: 'https://www.tiktok.com/@zbsuz' }],
+          telegram: 'https://t.me/+6_eRzvXSnrZlMTAy'
+        },
+        uz: {
+          title: 'IJTIMOIY TARMOQLAR',
+          instagram: [{ name: 'ZBS Newz UZ', url: 'https://www.instagram.com/zbsnewz.uz' }],
+          youtube: [{ name: 'ZBS Newz UZ', url: 'https://youtube.com/@zbsnewz' }],
+          tiktok: [{ name: 'ZBS Newz UZ', url: 'https://www.tiktok.com/@zbsnewzuzb' }],
+          telegram: 'https://t.me/+6_eRzvXSnrZlMTAy'
+        }
+      };
+
+      const content = {
+        ru: {
+          greeting: userName ? `Привет, ${userName}! 👋` : 'Привет! 👋',
+          subtitle: 'Новости любимого Узбекистана от популярных узбекских блогеров и знаменитостей',
+          nav: 'НАВИГАЦИЯ',
+          ads: 'Реклама', adsDesc: 'Разместить рекламу в канале',
+          faq: 'FAQ', faqDesc: 'Частые вопросы о канале',
+          collab: 'Сотрудничество', collabDesc: 'Партнёрство и коллаборации',
+          contact: 'Связаться', contactDesc: 'Написать редакции',
+          socials: 'Соц.сети', socialsDesc: 'Все наши площадки',
+          conditions: 'УСЛОВИЯ',
+          format: 'Формат', formatItems: ['Текст до 1000 символов', 'До 5 изображений или 1 видео', 'До 3 ссылок'],
+          requirements: 'Требования', reqItems: ['Обязательный тег #реклама', 'Контент не нарушает законодательство', 'Нет скама, пирамид, казино'],
+          payment: 'Оплата', paymentItems: ['От $100 за кружок (зависит от блогера)', '100% предоплата', 'Crypto (USDT, USDC)', 'Перевод на карту UZS/USD'],
+          orderAd: 'Заказать рекламу',
+          faqTitle: 'ЧАСТЫЕ ВОПРОСЫ',
+          faqItems: [
+            { q: 'Какая польза от рекламы в вашем канале?', a: 'Мы рассказываем новости в нативном формате — как другу, от разных блогеров. Это повышает доверие к бренду и позволяет более нативно интегрироваться в привычные методы восприятия информации через кружковый формат.' },
+            { q: 'Какой охват постов?', a: 'В среднем 7-15% от подписчиков' },
+            { q: 'Как быстро выйдет реклама?', a: 'В течение 24 часов после оплаты' },
+            { q: 'Сколько держится пост в ленте?', a: 'Сами мы посты не удаляем, только если об этом попросит заказчик.' }
+          ],
+          back: '← Назад'
+        },
+        uz: {
+          greeting: userName ? `Salom, ${userName}! 👋` : 'Salom! 👋',
+          subtitle: "Sevimli O'zbekiston yangiliklari mashhur o'zbek bloggerlar va taniqli shaxslardan",
+          nav: 'NAVIGATSIYA',
+          ads: 'Reklama', adsDesc: 'Kanalda reklama joylashtirish',
+          faq: 'FAQ', faqDesc: 'Kanal haqida savollar',
+          collab: 'Hamkorlik', collabDesc: 'Sheriklik va kollaboratsiya',
+          contact: "Bog'lanish", contactDesc: 'Tahririyatga yozish',
+          socials: 'Ijtimoiy tarmoqlar', socialsDesc: 'Barcha platformalar',
+          conditions: 'SHARTLAR',
+          format: 'Format', formatItems: ['1000 belgigacha matn', '5 ta rasm yoki 1 ta video', '3 tagacha havola'],
+          requirements: 'Talablar', reqItems: ['#reklama tegi majburiy', "Qonunga zid bo'lmagan kontent", "Scam, piramida, kazino yo'q"],
+          payment: "To'lov", paymentItems: ["Bloggerga qarab $100 dan boshlab", "100% oldindan to'lov", 'Crypto (USDT, USDC)', "Kartaga o'tkazma UZS/USD"],
+          orderAd: 'Reklama buyurtma qilish',
+          faqTitle: "KO'P BERILADIGAN SAVOLLAR",
+          faqItems: [
+            { q: "Kanaldagi reklamadan qanday foyda?", a: "Biz yangiliklarni do'stona, turli bloggerlar orqali tabiiy formatda aytib beramiz. Bu brendga ishonchni oshiradi va doira formatida ma'lumotni qabul qilishning odatiy usullariga tabiiy ravishda integratsiyalashadi." },
+            { q: "Post qamrovi qanday?", a: "O'rtacha obunachlarning 7-15%" },
+            { q: "Reklama qachon chiqadi?", a: "To'lovdan keyin 24 soat ichida" },
+            { q: "Post lentada qancha turadi?", a: "Biz postlarni o'chirmaymiz, faqat buyurtmachi so'rasa." }
+          ],
+          back: '← Orqaga'
+        }
+      };
+
+      const t = content[lang];
+      const s = socials[lang];
+
+      const MenuItem = ({ icon, title, desc, onClick }) => (
+        <div onClick={onClick} className="flex items-center gap-3 p-4 bg-white rounded-xl mb-3 cursor-pointer hover:bg-gray-50 transition-all shadow-sm">
+          <div className="text-3xl">{icon}</div>
+          <div className="flex-1">
+            <div className="font-semibold text-gray-800">{title}</div>
+            <div className="text-sm text-gray-500">{desc}</div>
+          </div>
+          <div className="text-gray-400">›</div>
+        </div>
+      );
+
+      const InfoCard = ({ icon, title, items }) => (
+        <div className="bg-white rounded-xl p-4 mb-3 shadow-sm">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="text-2xl">{icon}</div>
+            <div className="font-semibold text-gray-800">{title}</div>
+          </div>
+          <ul className="space-y-2">
+            {items.map((item, i) => <li key={i} className="text-gray-600 text-sm flex items-start gap-2"><span className="text-pink-500">•</span>{item}</li>)}
+          </ul>
+        </div>
+      );
+
+      const SocialLink = ({ icon, name, url }) => (
+        <a href={url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-all">
+          {icon}<span className="text-gray-700 font-medium">{name}</span><span className="ml-auto text-gray-400">↗</span>
+        </a>
+      );
+
+      const HomePage = () => (
+        <>
+          <div className="bg-white rounded-2xl p-6 mb-6 text-center shadow-sm">
+            <div className="mx-auto mb-4 flex items-center justify-center"><ZBSLogo /></div>
+            <h1 className="text-2xl font-bold text-gray-800">ZBS Newz</h1>
+            <p className="text-gray-500">@zbsnewz</p>
+          </div>
+          <div className="bg-white rounded-xl p-4 mb-6 shadow-sm border-l-4 border-pink-500">
+            <div className="text-xl font-semibold text-gray-800">{t.greeting}</div>
+            <div className="text-gray-500 text-sm mt-1">{t.subtitle}</div>
+          </div>
+          <div className="text-xs font-semibold text-pink-500 mb-3 px-1">{t.nav}</div>
+          <MenuItem icon="📢" title={t.ads} desc={t.adsDesc} onClick={() => setCurrentPage('ads')} />
+          <MenuItem icon="❓" title={t.faq} desc={t.faqDesc} onClick={() => setCurrentPage('faq')} />
+          <MenuItem icon="🤝" title={t.collab} desc={t.collabDesc} onClick={() => window.open('https://t.me/nasyrov_robert', '_blank')} />
+          <MenuItem icon="✉️" title={t.contact} desc={t.contactDesc} onClick={() => window.open('https://t.me/nasyrov_robert', '_blank')} />
+          <MenuItem icon="🌐" title={t.socials} desc={t.socialsDesc} onClick={() => setCurrentPage('socials')} />
+        </>
+      );
+
+      const AdsPage = () => (
+        <>
+          <button onClick={() => setCurrentPage('home')} className="text-pink-500 font-medium mb-4 hover:underline">{t.back}</button>
+          <div className="text-xs font-semibold text-pink-500 mb-3">{t.conditions}</div>
+          <InfoCard icon="📝" title={t.format} items={t.formatItems} />
+          <InfoCard icon="✅" title={t.requirements} items={t.reqItems} />
+          <InfoCard icon="💳" title={t.payment} items={t.paymentItems} />
+          <button onClick={() => window.open('https://t.me/nasyrov_robert', '_blank')} className="w-full bg-gradient-to-r from-yellow-400 to-pink-500 text-white font-semibold py-4 rounded-xl mt-4 hover:opacity-90 transition-opacity">{t.orderAd}</button>
+        </>
+      );
+
+      const FAQPage = () => (
+        <>
+          <button onClick={() => setCurrentPage('home')} className="text-pink-500 font-medium mb-4 hover:underline">{t.back}</button>
+          <div className="text-xs font-semibold text-pink-500 mb-3">{t.faqTitle}</div>
+          {t.faqItems.map((item, i) => (
+            <div key={i} className="bg-white rounded-xl p-4 mb-3 shadow-sm">
+              <div className="font-semibold text-gray-800 mb-2">{item.q}</div>
+              <div className="text-gray-600 text-sm">{item.a}</div>
+            </div>
+          ))}
+        </>
+      );
+
+      const SocialsPage = () => (
+        <>
+          <button onClick={() => setCurrentPage('home')} className="text-pink-500 font-medium mb-4 hover:underline">{t.back}</button>
+          <div className="text-xs font-semibold text-pink-500 mb-3">{s.title}</div>
+          <div className="bg-white rounded-xl p-4 mb-3 shadow-sm">
+            <div className="font-semibold text-gray-800 mb-3 flex items-center gap-2"><InstagramIcon /> Instagram</div>
+            <div className="space-y-2">{s.instagram.map((item, i) => <SocialLink key={i} icon={<InstagramIcon />} name={item.name} url={item.url} />)}</div>
+          </div>
+          <div className="bg-white rounded-xl p-4 mb-3 shadow-sm">
+            <div className="font-semibold text-gray-800 mb-3 flex items-center gap-2"><YouTubeIcon /> YouTube</div>
+            <div className="space-y-2">{s.youtube.map((item, i) => <SocialLink key={i} icon={<YouTubeIcon />} name={item.name} url={item.url} />)}</div>
+          </div>
+          <div className="bg-white rounded-xl p-4 mb-3 shadow-sm">
+            <div className="font-semibold text-gray-800 mb-3 flex items-center gap-2"><TikTokIcon /> TikTok</div>
+            <div className="space-y-2">{s.tiktok.map((item, i) => <SocialLink key={i} icon={<TikTokIcon />} name={item.name} url={item.url} />)}</div>
+          </div>
+          <div className="bg-white rounded-xl p-4 mb-3 shadow-sm">
+            <div className="font-semibold text-gray-800 mb-3 flex items-center gap-2"><TelegramIcon /> Telegram</div>
+            <SocialLink icon={<TelegramIcon />} name="ZBS Newz Channel" url={s.telegram} />
+          </div>
+        </>
+      );
+
+      return (
+        <div className="min-h-screen bg-gray-100">
+          <div className="bg-white border-b sticky top-0 z-10">
+            <div className="flex items-center justify-between px-4 py-3">
+              <div className="font-bold text-gray-800">ZBS Newz</div>
+              <div className="flex gap-1 bg-gray-100 rounded-lg p-1">
+                <button onClick={() => setLang('ru')} className={`px-3 py-1 rounded-md text-sm font-medium transition-all ${lang === 'ru' ? 'bg-white shadow text-pink-500' : 'text-gray-500'}`}>RU</button>
+                <button onClick={() => setLang('uz')} className={`px-3 py-1 rounded-md text-sm font-medium transition-all ${lang === 'uz' ? 'bg-white shadow text-pink-500' : 'text-gray-500'}`}>UZ</button>
+              </div>
+            </div>
+          </div>
+          <div className="p-4 pb-8">
+            {currentPage === 'home' && <HomePage />}
+            {currentPage === 'ads' && <AdsPage />}
+            {currentPage === 'faq' && <FAQPage />}
+            {currentPage === 'socials' && <SocialsPage />}
+          </div>
+          <div className="text-center text-gray-400 text-xs pb-4">@zbsnewz_bot</div>
+        </div>
+      );
+    };
+
+    ReactDOM.render(<ZBSMiniApp />, document.getElementById('root'));
+  </script>
+</body>
+</html>
